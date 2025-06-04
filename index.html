@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prolog Животни с GIF</title>
+  <script src="https://unpkg.com/tau-prolog"></script>
+  <script src="https://unpkg.com/tau-prolog/modules/lists.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .animal-gif {
+      width: 200px;
+      height: auto;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Prolog Животни</h2>
+  <p>Въведи Prolog заявка (например <code>animal(X).</code>)</p>
+  <input type="text" id="query" placeholder="animal(X)." size="40" />
+  <button onclick="runQuery()">Изпълни</button>
+
+  <div id="output"></div>
+  <div id="gifContainer"></div>
+
+  <script>
+    // Prolog база от знания
+    const knowledge = `
+      animal(cat).
+      animal(dog).
+      animal(elephant).
+      is_mammal(X) :- animal(X).
+    `;
+
+    // GIF изображения за животни
+    const animalAnimations = {
+      cat: '<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" class="animal-gif" alt="Cat" />',
+      dog: '<img src="https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif" class="animal-gif" alt="Dog" />',
+      elephant: '<img src="https://media.giphy.com/media/5kq5oRzUqrA5e/giphy.gif" class="animal-gif" alt="Elephant" />'
+    };
+
+    // Създаваме Prolog сесия
+    const session = pl.create();
+    session.consult(knowledge, {
+      success: () => console.log("Заредена е Prolog базата."),
+      error: err => console.error("Грешка при зареждане на базата:", err)
+    });
+
+    function runQuery() {
+      const query = document.getElementById("query").value;
+      const outputDiv = document.getElementById("output");
+      const gifDiv = document.getElementById("gifContainer");
+      outputDiv.innerHTML = "";
+      gifDiv.innerHTML = "";
+
+      session.query(query, {
+        success: () => {
+          session.answers((answer) => {
+            if (answer === false) {
+              outputDiv.innerHTML = "Няма резултат.";
+            } else {
+              const formatted = pl.format_answer(answer);
+              outputDiv.innerHTML += `<p><strong>Резултат:</strong> ${formatted}</p>`;
+
+              // Търсим стойности на променливи като X = cat
+              const matches = formatted.match(/X\s*=\s*(\w+)/);
+              if (matches && matches[1] in animalAnimations) {
+                gifDiv.innerHTML = animalAnimations[matches[1]];
+              }
+            }
+          });
+        },
+        error: (err) => {
+          outputDiv.innerHTML = "Грешка в заявката: " + err;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
