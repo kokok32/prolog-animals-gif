@@ -40,6 +40,7 @@
       cat: '<img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" class="animal-gif" alt="Cat" />',
       dog: '<img src="https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif" class="animal-gif" alt="Dog" />',
       elephant: '<img src="https://media.giphy.com/media/5kq5oRzUqrA5e/giphy.gif" class="animal-gif" alt="Elephant" />'
+      tiger: '<img src="https://media.giphy.com/media/tK4jKnfG3Vhza/giphy.gif" class="animal-gif" alt="Tiger" />'
     };
 
     // Създаваме Prolog сесия
@@ -61,7 +62,8 @@
           session.answers((answer) => {
             if (answer === false) {
               outputDiv.innerHTML = "Няма резултат.";
-            } else {
+            } 
+            else {
               const formatted = pl.format_answer(answer);
               outputDiv.innerHTML += `<p><strong>Резултат:</strong> ${formatted}</p>`;
 
